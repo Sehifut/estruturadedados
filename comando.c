@@ -94,23 +94,20 @@ int comando_valido(const char *linha) {
         return tabela_valida(tabela) && contem(s, "(") && contem(s, "values(");
     }
 
-    /* update tabela set ... where ...; */
     if (comeca_com(s, "update ")) {
         if (sscanf(s, "update %31[a-z_]", tabela) != 1) return 0;
         return tabela_valida(tabela) && contem(s, " set ") && contem(s, " where ");
     }
 
-    /* delete from tabela where ...; */
     if (comeca_com(s, "delete from ")) {
         if (sscanf(s, "delete from %31[a-z_]", tabela) != 1) return 0;
         return tabela_valida(tabela) && contem(s, " where ");
     }
 
-    /* select * from tabela [where ...] [order by ...]; */
     if (comeca_com(s, "select * from ")) {
         if (sscanf(s, "select * from %31[a-z_]", tabela) != 1) return 0;
         return tabela_valida(tabela);
     }
 
-    return 0;   /* não começa com nenhum comando conhecido */
+    return 0;
 }

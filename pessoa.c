@@ -81,13 +81,12 @@ void lista_pessoa_liberar(ListaPessoa *l) {
     l->fim = NULL;
     l->tamanho = 0;
 }
-/* grava um campo: se estiver vazio, grava "-" */
 static const char *campo_ou_traco(const char *s) {
     return (s[0] == '\0') ? "-" : s;
 }
 
 int pessoa_salvar(ListaPessoa *l, const char *arquivo) {
-    FILE *f = fopen(arquivo, "w");   /* "w" apaga e recria o arquivo */
+    FILE *f = fopen(arquivo, "w");
     if (f == NULL) {
         return 0;
     }
@@ -109,7 +108,7 @@ int pessoa_salvar(ListaPessoa *l, const char *arquivo) {
 int pessoa_carregar(ListaPessoa *l, const char *arquivo) {
     FILE *f = fopen(arquivo, "r");
     if (f == NULL) {
-        return 0;   /* arquivo ainda não existe: lista continua vazia */
+        return 0; 
     }
 
     char linha[400];
@@ -117,19 +116,18 @@ int pessoa_carregar(ListaPessoa *l, const char *arquivo) {
         Pessoa p;
         char nome[100], fone[20], endereco[150], nasc[11];
 
-        /* lê a linha no formato: codigo;nome;fone;endereco;nascimento */
+    
         if (sscanf(linha, "%d;%99[^;];%19[^;];%149[^;];%10[^\n]",
                    &p.codigo, nome, fone, endereco, nasc) != 5) {
-            continue;   /* linha mal formada: ignora */
+            continue; 
         }
 
-        /* desfaz o "-" de campos vazios */
         strcpy(p.nome, strcmp(nome, "-") == 0 ? "" : nome);
         strcpy(p.fone, strcmp(fone, "-") == 0 ? "" : fone);
         strcpy(p.endereco, strcmp(endereco, "-") == 0 ? "" : endereco);
         strcpy(p.data_nascimento, strcmp(nasc, "-") == 0 ? "" : nasc);
 
-        pessoa_inserir(l, p);   /* reaproveita a validação de código repetido */
+        pessoa_inserir(l, p); 
     }
 
     fclose(f);
