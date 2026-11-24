@@ -1,0 +1,7 @@
+insert into pessoa(codigo, nome, data_nascimento) values(20, 'zeca', '01/01/1990');
+insert into pessoa(codigo, nome, data_nascimento) values(21, 'ana', '02/02/1995');
+insert into pessoa(codigo, nome, data_nascimento) values(22, 'marcos', '03/03/1980');
+select * from pessoa order by nome;
+delete from pessoa where codigo = 20;
+delete from pessoa where codigo = 21;
+delete from pessoa where codigo = 22;

@@ -1,0 +1,12 @@
+insert into pessoa(codigo, nome, data_nascimento) values(30, 'lia', '05/05/2000');
+insert into tipo_pet(codigo, descricao) values(30, 'peixe');
+insert into pet(codigo, codigo_cli, nome, codigo_tipo) values(30, 30, 'nemo', 30);
+update pessoa set nome = 'lia maria', fone = '888777666' where codigo = 30;
+update pessoa set codigo = 99 where codigo = 30;
+update pet set codigo_tipo = 99 where codigo = 30;
+update tipo_pet set descricao = 'peixe dourado' where codigo = 30;
+update pet set nome = 'nemo2', codigo_tipo = 30 where codigo = 30;
+select * from pessoa order by nome;
+delete from pet where codigo = 30;
+delete from pessoa where codigo = 30;
+delete from tipo_pet where codigo = 30;
