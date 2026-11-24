@@ -1,0 +1,12 @@
+insert into tipo_pet(codigo, descricao) values(40, 'coelho');
+insert into pessoa(codigo, nome, data_nascimento) values(40, 'rita', '07/07/1999');
+insert into pet(codigo, codigo_cli, nome, codigo_tipo) values(40, 40, 'zico', 40);
+insert into pet(codigo, codigo_cli, nome, codigo_tipo) values(41, 40, 'amora', 40);
+insert into pet(codigo, codigo_cli, nome, codigo_tipo) values(42, 40, 'mel', 40);
+select * from pet where codigo = 41;
+select * from pet order by nome;
+delete from pet where codigo = 40;
+delete from pet where codigo = 41;
+delete from pet where codigo = 42;
+delete from pessoa where codigo = 40;
+delete from tipo_pet where codigo = 40;

@@ -1,0 +1,5 @@
+insert into pessoa(codigo, nome, data_nascimento) values(50, 'tom', '01/02/1990');
+insert into tipo_pet(codigo, descricao) values(50, 'hamster');
+insert into pet(codigo, codigo_cli, nome, codigo_tipo) values(50, 50, 'pipoca', 50);
+select * from pessoa where codigo = 50;
+select * from pessoa where codigo = 99;

@@ -216,17 +216,33 @@ static NoArvore *montar_arvore_pessoas(ListaPessoa *pessoas) {
 
 static void executar_select_pessoa(ListaPessoa *pessoas, const char *cmd) {
     printf("codigo;nome;fone;endereco;nascimento\n");
+    
+    if (strstr(cmd, " where ") != NULL) {
+        int cod;
+        if (!parse_where_codigo(cmd, &cod)) {
+            printf("(use: where codigo = N)\n");
+            return;
+        }
+        NoPessoa *a = pessoa_buscar(pessoas, cod);
+        if (a == NULL) {
+            printf("(nenhum registro)\n");
+        } else {
+            printf("%d;%s;%s;%s;%s\n", a->dados.codigo, a->dados.nome,
+                   a->dados.fone, a->dados.endereco, a->dados.data_nascimento);
+        }
+        return;
+    }
 
     if (strstr(cmd, "order by nome") != NULL) {
         NoArvore *raiz = montar_arvore_pessoas(pessoas);
         arvore_em_ordem(raiz);
         arvore_liberar(raiz);
-    } else {
-        for (NoPessoa *a = pessoas->inicio; a != NULL; a = a->prox) {
-            printf("%d;%s;%s;%s;%s\n",
-                   a->dados.codigo, a->dados.nome, a->dados.fone,
-                   a->dados.endereco, a->dados.data_nascimento);
-        }
+        return;
+    }
+
+    for (NoPessoa *a = pessoas->inicio; a != NULL; a = a->prox) {
+        printf("%d;%s;%s;%s;%s\n", a->dados.codigo, a->dados.nome,
+               a->dados.fone, a->dados.endereco, a->dados.data_nascimento);
     }
 }
 #define PET_CODIGO  1
@@ -423,6 +439,45 @@ static int executar_update_pet(ListaPet *pets, ListaPessoa *pessoas,
     n->dados = novo;
     return 1;
 }
+static NoArvorePet *montar_arvore_pets(ListaPet *pets) {
+    NoArvorePet *raiz = NULL;
+    for (NoPet *a = pets->inicio; a != NULL; a = a->prox) {
+        raiz = arvore_pet_inserir(raiz, a->dados);
+    }
+    return raiz;
+}
+
+static void executar_select_pet(ListaPet *pets, const char *cmd) {
+    printf("codigo;codigo_pes;codigo_tipo;nome\n");
+
+    if (strstr(cmd, " where ") != NULL) {
+        int cod;
+        if (!parse_where_codigo(cmd, &cod)) {
+            printf("(use: where codigo = N)\n");
+            return;
+        }
+        NoPet *a = pet_buscar(pets, cod);
+        if (a == NULL) {
+            printf("(nenhum registro)\n");
+        } else {
+            printf("%d;%d;%d;%s\n", a->dados.codigo, a->dados.codigo_pes,
+                   a->dados.codigo_tipo, a->dados.nome);
+        }
+        return;
+    }
+
+    if (strstr(cmd, "order by nome") != NULL) {
+        NoArvorePet *raiz = montar_arvore_pets(pets);
+        arvore_pet_em_ordem(raiz);
+        arvore_pet_liberar(raiz);
+        return;
+    }
+
+    for (NoPet *a = pets->inicio; a != NULL; a = a->prox) {
+        printf("%d;%d;%d;%s\n", a->dados.codigo, a->dados.codigo_pes,
+               a->dados.codigo_tipo, a->dados.nome);
+    }
+}
 int executar_pessoa(ListaPessoa *pessoas, ListaPet *pets, const char *comando) {
     if (strncmp(comando, "insert into ", 12) == 0) {
         if (executar_insert_pessoa(pessoas, comando)) {
@@ -507,6 +562,10 @@ int executar_pet(ListaPet *pets, ListaPessoa *pessoas,
         } else {
             printf("ERRO (dados inválidos ou registro inexistente): %s\n", comando);
         }
+        return 1;
+    }
+     if (strncmp(comando, "select * from ", 14) == 0) {
+        executar_select_pet(pets, comando);
         return 1;
     }
     printf("[ainda não implementado pet] %s\n", comando);

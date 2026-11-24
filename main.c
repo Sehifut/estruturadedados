@@ -54,7 +54,7 @@ static void carregar_script(Fila *entrada) {
         }
         while (fgets(linha, sizeof(linha), f) != NULL) {
             tirar_quebra(linha);
-            if (linha[0] == '\0') continue; 
+            if (linha[0] == '\0') continue;
             fila_enfileirar(entrada, linha);
         }
         fclose(f);
@@ -72,13 +72,16 @@ int main(void) {
     ListaPessoa pessoas;
     ListaTipoPet tipos;
     ListaPet pets;
-    Fila entrada;
+    Fila entrada, fila_pessoa, fila_tipo, fila_pet;
     Comando *c;
 
     lista_pessoa_inicializar(&pessoas);
     lista_tipo_pet_inicializar(&tipos);
     lista_pet_inicializar(&pets);
     fila_inicializar(&entrada);
+    fila_inicializar(&fila_pessoa);
+    fila_inicializar(&fila_tipo);
+    fila_inicializar(&fila_pet);
 
     pessoa_carregar(&pessoas, ARQ_PESSOAS);
     tipo_pet_carregar(&tipos, ARQ_TIPOS);
@@ -88,24 +91,31 @@ int main(void) {
 
     carregar_script(&entrada);
 
-     while ((c = fila_desenfileirar(&entrada)) != NULL) {
+    while ((c = fila_desenfileirar(&entrada)) != NULL) {
         if (!comando_valido(c->descricao)) {
             printf("Ignorado (inválido): %s\n", c->descricao);
         } else {
             switch (entidade_do_comando(c->descricao)) {
-                case ENT_PESSOA:
-                    executar_pessoa(&pessoas, &pets, c->descricao);
-                    break;
-                case ENT_TIPO:
-                    executar_tipo(&tipos, &pets, c->descricao);
-                    break;
-                case ENT_PET:
-                    executar_pet(&pets, &pessoas, &tipos, c->descricao);
-                    break;
+                case ENT_PESSOA: fila_enfileirar(&fila_pessoa, c->descricao); break;
+                case ENT_TIPO:   fila_enfileirar(&fila_tipo, c->descricao);   break;
+                case ENT_PET:    fila_enfileirar(&fila_pet, c->descricao);    break;
                 default:
                     printf("Ignorado (tabela desconhecida): %s\n", c->descricao);
             }
         }
+        free(c);
+    }
+
+    while ((c = fila_desenfileirar(&fila_pessoa)) != NULL) {
+        executar_pessoa(&pessoas, &pets, c->descricao);
+        free(c);
+    }
+    while ((c = fila_desenfileirar(&fila_tipo)) != NULL) {
+        executar_tipo(&tipos, &pets, c->descricao);
+        free(c);
+    }
+    while ((c = fila_desenfileirar(&fila_pet)) != NULL) {
+        executar_pet(&pets, &pessoas, &tipos, c->descricao);
         free(c);
     }
 
@@ -114,10 +124,13 @@ int main(void) {
     pet_salvar(&pets, ARQ_PETS);
     printf("\nDados salvos.\n");
 
-  
     lista_pessoa_liberar(&pessoas);
     lista_tipo_pet_liberar(&tipos);
     lista_pet_liberar(&pets);
     fila_liberar(&entrada);
+    fila_liberar(&fila_pessoa);
+    fila_liberar(&fila_tipo);
+    fila_liberar(&fila_pet);
+
     return 0;
 }

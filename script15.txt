@@ -1,0 +1,2 @@
+delete from pessoa where codigo = 50;
+delete from tipo_pet where codigo = 50;
