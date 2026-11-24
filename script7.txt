@@ -1,0 +1,2 @@
+delete from pet where codigo = 1;
+delete from pessoa where codigo = 1;

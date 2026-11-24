@@ -1,0 +1,2 @@
+insert into pessoa(codigo, nome, fone, data_nascimento) values(1, 'joão', '859995566', '04/10/2002');
+insert into pessoa(codigo, nome, data_nascimento) values(2, 'maria', '31-10-2002');

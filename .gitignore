@@ -1,0 +1,5 @@
+*.o
+*.exe
+pessoas.txt
+pets.txt
+tipos_pet.txt
